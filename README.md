@@ -50,29 +50,31 @@ To solve this problem I use <b>s3 bucket</b>. First I extract the join command a
 ## Running the Script
 After doing the requirements, you are ready now, start clone the repo to your machine:
 ``` shell
-git clone https://github.com/Ahmad-Faqehi/Terraform-Bulding-K8S.git
+git clone https://github.com/DanielAtCosmicDNA/Terraform-Bulding-K8S
 cd Terraform-Bulding-K8S/
 ```
 Now execute terraform commands:
 ``` shell
 terraform init
-terraform plan #to show what going to build
-terraform apply
+terraform plan -out blueprint #to show what is going to be built
+terraform apply "blueprint"
+```
+
+Finally, run the following script:
+```shell
+chmod +x ./scripts/after_terraform.sh
+./scripts/after_terraform.sh
 ```
 
 ## Accessing Your Cluster
 * You can access your cluster by accessing the master node throw <b>ssh</b>, you can get the public IP of master node from terrform outputs. Below is example of ssh command:
 ``` shell
-ssh -i <Your_Key_Piar> ubuntu@<MasterNode_Public_IP>
+ssh -i "$SSH_KEY" "ubuntu@$KUBE_MASTER"
 ```
 
-* Another way to access the cluster by download the `admin.conf` file from master node to your machine, find below the way to download it and aceess the cluster remotely.
-``` shell
-scp -i <Your_Key_Piar> ubuntu@<MasterNode_Public_IP>:/tmp/admin.conf .
-```
-This will download the kubernetes config file on your machine. Before using this config file, you have to replace the private ip to public ip of master node. Then you can fastly used by following commann to start accessing the cluster.
+* Another way to access the cluster by download the `admin.conf` file from master node to your machine. The download was already performed within the script `after_terraform.sh`. Therefore you can fastly use it by the following command to start accessing the cluster.
 ```shell
-kubectl --kubeconfig ./admin.conf get nodes
+kubectl get nodes
 ```
 
 ## Removing and Destroying Kuberntes Cluster
@@ -87,7 +89,7 @@ terraform destroy
 
 Ahmad Faqehi - [iAhmad.info](https://iAhmad.info) - alfaqehi775@hotmail.com
 
-Project Link: [https://github.com/Ahmad-Faqehi/Terraform-Bulding-K8S](https://github.com/Ahmad-Faqehi/Terraform-Bulding-K8S)
+Project Link: [https://github.com/DanielAtCosmicDNA/Terraform-Bulding-K8S](https://github.com/DanielAtCosmicDNA/Terraform-Bulding-K8S)
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
@@ -97,4 +99,4 @@ Project Link: [https://github.com/Ahmad-Faqehi/Terraform-Bulding-K8S](https://gi
 [twitter-shield]: https://img.shields.io/badge/-twitter-black.svg?style=for-the-badge&logo=twitter&colorB=555
 [twittwe-url]: https://twitter.com/A_F775
 [github-shield]: https://img.shields.io/badge/-github-black.svg?style=for-the-badge&logo=github&colorB=555
-[github-url]: https://github.com/Ahmad-Faqehi
+[github-url]: https://github.com/DanielAtCosmicDNA

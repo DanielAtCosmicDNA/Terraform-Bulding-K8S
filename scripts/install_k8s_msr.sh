@@ -13,7 +13,7 @@ export AWS_DEFAULT_REGION=${region}
 apt update
 apt install apt-transport-https ca-certificates curl software-properties-common -y
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+yes | add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
 
 #Installing Docker
 apt update
@@ -45,11 +45,15 @@ systemctl restart containerd
 
 #Kubernetes cluster init
 #You can replace 172.16.0.0/16 with your desired pod network
-kubeadm init --apiserver-advertise-address=$ipaddr --pod-network-cidr=172.16.0.0/16 --apiserver-cert-extra-sans=$pubip > /tmp/restult.out
-cat /tmp/restult.out
+kubeadm init \
+  --apiserver-advertise-address=$ipaddr \
+  --pod-network-cidr=172.16.0.0/16 \
+  --apiserver-cert-extra-sans=$pubip \
+  --ignore-preflight-errors=NumCPU,Mem > /tmp/result.out
+cat /tmp/result.out
 
 #to get join commdn
-tail -2 /tmp/restult.out > /tmp/join_command.sh;
+tail -2 /tmp/result.out > /tmp/join_command.sh;
 aws s3 cp /tmp/join_command.sh s3://${s3buckit_name};
 #this adds .kube/config for root account, run same for ubuntu user, if you need it
 mkdir -p /root/.kube;
